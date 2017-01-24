@@ -103,7 +103,9 @@ class Encoder(object):
         tags = entry["EventTags"]
         if tags.get("hostname"):
             tag.append('hostname="{0!s}"'.format(self.escape_tag(tags["hostname"])))
-      
+        if tags.get("cluster"):
+            tag.append('cluster="{0!s}"'.format(self.escape_tag(tags["cluster"])))
+
         tag_str = ','.join(tag) 
         msg = ev["message"].replace('\\"', '"').replace("\n", '').replace('"', '\\"')
         value = 'message="{0!s}"'.format(msg)

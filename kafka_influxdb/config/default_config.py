@@ -22,6 +22,7 @@ DEFAULT_CONFIG = {
     },
     'encoder': 'kafka_influxdb.encoder.collectd_graphite_encoder',
     'buffer_size': 1000,
+    'flush_period': 60,
     'configfile': None,
     'c': None,
     'statistics': False,

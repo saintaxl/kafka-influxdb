@@ -36,12 +36,15 @@ class Worker(object):
 
         logging.info("Listening for messages on Kafka topic %s...", self.config.kafka_topic)
         self.start_time = time.time()
+        last_time = time.time()
+                  
         while True:
             try:
                 for index, raw_message in enumerate(self.reader.read(), 1):
                     self.buffer.extend(self.encoder.encode(raw_message))
-                    if index % self.config.buffer_size == 0:
+                    if index % self.config.buffer_size == 0 or time.time() - last_time > self.config.flush_period:
                         self.flush()
+                        last_time = time.time()
             except EncoderError:
                 logging.error("Encoder error. Trying to reconnect to %s:%s",
                               self.config.kafka_host, self.config.kafka_port)
