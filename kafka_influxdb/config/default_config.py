@@ -25,7 +25,7 @@ DEFAULT_CONFIG = {
     'flush_period': 60,
     'configfile': None,
     'c': None,
-    'statistics': False,
+    'statistics': True,
     's': False,
     'verbose': 0,
     'v': 0

@@ -3,6 +3,7 @@ A worker handles the connection to both, Kafka and InfluxDB and handles encoding
 """
 import logging
 import time
+from datetime import datetime
 import sys
 from requests.exceptions import ConnectionError
 from influxdb.exceptions import InfluxDBServerError, InfluxDBClientError
@@ -36,15 +37,15 @@ class Worker(object):
 
         logging.info("Listening for messages on Kafka topic %s...", self.config.kafka_topic)
         self.start_time = time.time()
-        last_time = time.time()
                   
         while True:
             try:
-                for index, raw_message in enumerate(self.reader.read(), 1):
+                for _, raw_message in enumerate(self.reader.read(), 1):
                     self.buffer.extend(self.encoder.encode(raw_message))
-                    if index % self.config.buffer_size == 0 or time.time() - last_time > self.config.flush_period:
+                    current = time.time() 
+                    if len(self.buffer) > self.config.buffer_size or current - self.start_time > self.config.flush_period:
                         self.flush()
-                        last_time = time.time()
+                        self.start_time = current
             except EncoderError:
                 logging.error("Encoder error. Trying to reconnect to %s:%s",
                               self.config.kafka_host, self.config.kafka_port)
@@ -88,11 +89,11 @@ class Worker(object):
         """
         Print performance metrics to stdout
         """
-        delta = time.time() - self.start_time
-        msg_per_sec = self.config.buffer_size / delta
-        print("Flushing output buffer. {0:.2f} messages/s".format(msg_per_sec))
-        # Reset timer
-        self.start_time = time.time()
+        current = time.time()
+        delta = current - self.start_time
+        msg_per_sec = len(self.buffer) / delta
+        
+        print("{0} Flushing output buffer. {1:.2f} messages/s".format(datetime.fromtimestamp(current).strftime("%Y-%m-%d %H:%m:%S"), msg_per_sec))
 
     def set_reader(self, reader):
         self.reader = reader
