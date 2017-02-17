@@ -131,6 +131,9 @@ def parse_args(args=sys.argv[1:]):
     parser.add_argument('--buffer_size', type=int, default=argparse.SUPPRESS,
                         help="Maximum number of messages that will be collected before flushing to the backend "
                              "(default: 1000)")
+    parser.add_argument('--flush_period', type=int, default=argparse.SUPPRESS,
+                        help="Flush period for influxdb client"
+                             "(default: 60)")
     parser.add_argument('-c', '--configfile', type=str, default=argparse.SUPPRESS,
                         help="Configfile path (default: None)")
     parser.add_argument('-s', '--statistics', default=argparse.SUPPRESS, action="store_true",
