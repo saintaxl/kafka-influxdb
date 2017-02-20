@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+encoding//kafka_influxdb/reader/kafka_python.py=utf-8
+encoding//kafka_influxdb/writer/influxdb_writer.py=utf-8
