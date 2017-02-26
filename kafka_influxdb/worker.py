@@ -46,8 +46,8 @@ class Worker(object):
                     if len(self.buffer) > self.config.buffer_size or current - self.start_time > self.config.flush_period:
                         self.flush()
                         self.start_time = current
-            except EncoderError:
-                logging.error("Encoder error. Trying to reconnect to %s:%s",
+            except EncoderError as e:
+                logging.error("Encoder error %s. Trying to reconnect to %s:%s", str(e), 
                               self.config.kafka_host, self.config.kafka_port)
                 logging.debug("Sleeping for %d ms before reconnect",
                               self.config.kafka_reconnect_wait_time_ms)

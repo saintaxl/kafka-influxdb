@@ -5,7 +5,7 @@ DEFAULT_CONFIG = {
         'topic': 'my_topic',
         'group': 'kafka-influxdb',
         'reconnect_wait_time_ms': 1000,
-        'reader': 'kafka_influxdb.reader.confluent',
+        'reader': 'kafka_influxdb.reader.kafka_python',
     },
     'influxdb': {
         'host': 'localhost',
