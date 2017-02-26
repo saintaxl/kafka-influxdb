@@ -50,8 +50,8 @@ class Worker(object):
                 logging.error("Encoder error. Trying to reconnect to %s:%s",
                               self.config.kafka_host, self.config.kafka_port)
                 logging.debug("Sleeping for %d ms before reconnect",
-                              self.config.reconnect_wait_time_ms)
-                time.sleep(self.config.reconnect_wait_time_ms / 1000.0)
+                              self.config.kafka_reconnect_wait_time_ms)
+                time.sleep(self.config.kafka_reconnect_wait_time_ms / 1000.0)
             except KeyboardInterrupt:
                 logging.info("Shutdown. Flushing remaining messages from buffer.")
                 self.flush()
