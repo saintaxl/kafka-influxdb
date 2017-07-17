@@ -19,7 +19,8 @@ class Reader(ReaderAbstract):
         try:
             self.consumer = KafkaConsumer(self.topic,
                                           group_id=self.group,
-                                          bootstrap_servers=[connection]
+                                          bootstrap_servers=[connection],
+                                          auto_offset_reset="smallest"
                                           )
         except KafkaUnavailableError as e:
             raise EncoderError(e)
