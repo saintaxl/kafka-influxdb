@@ -58,6 +58,8 @@ class Encoder(object):
         for entry in entries:
             try:
                 measurement = entry["name"]
+                if measurement.find(".") > 0
+                    continue
                 tags = self.format_tags(entry)
                 value = self.format_value(entry)
                 time = self.format_time(entry)
