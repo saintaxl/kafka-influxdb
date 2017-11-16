@@ -4,6 +4,7 @@ except ImportError:
     import json
 
 import logging
+import os
 
 try:
     # Test for mypy support (requires Python 3)
@@ -60,6 +61,15 @@ class Encoder(object):
                 measurement = entry["name"]
                 if measurement.find(".") > 0:
                     continue
+                
+                nstags = entry['tags']
+                if "WHITE_LIST_NS" in os.environ and "namespace" in nstags:
+                    namespaces = os.environ["WHITE_LIST_NS"]
+                    nsList = namespaces.split(",")
+                    namespace = nstags["namespace"]
+                    if namespace not in nsList:
+                        continue   
+                    
                 tags = self.format_tags(entry)
                 value = self.format_value(entry)
                 time = self.format_time(entry)
