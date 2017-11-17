@@ -1,11 +1,12 @@
-try:
-    import ujson as json
-except ImportError:
-    import json
 
 import logging
 import os
 import time
+
+try:
+    import ujson as json
+except ImportError:
+    import json
 
 try:
     # Test for mypy support (requires Python 3)
@@ -55,7 +56,7 @@ class Encoder(object):
     def encode(self, msg):
         # type: (bytes) -> List[Text]
         global preUpdateTime, namespaces
-        now = time.time()
+        now = time.time()        
         if now - preUpdateTime > 120:
             preUpdateTime = now
             fo = open("/etc/config/whitelist", "r")
@@ -85,8 +86,8 @@ class Encoder(object):
 
                 tags = self.format_tags(entry)
                 value = self.format_value(entry)
-                time = self.format_time(entry)
-                measurements.append(self.compose_data(measurement, tags, value, time))
+                etime = self.format_time(entry)
+                measurements.append(self.compose_data(measurement, tags, value, etime))
             except Exception as e:
                 logging.debug("Error in input data: %s. Skipping.", e)
 
