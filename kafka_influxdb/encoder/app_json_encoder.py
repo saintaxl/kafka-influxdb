@@ -5,6 +5,7 @@ except ImportError:
 
 import logging
 import os
+import time
 
 try:
     # Test for mypy support (requires Python 3)
@@ -45,11 +46,25 @@ class Encoder(object):
     }]
      """
 
+    preUpdateTime = 0
+    namespaces = ""
+
     def __init__(self):
         self.escape_tag = influxdb_tag_escaper()
 
     def encode(self, msg):
         # type: (bytes) -> List[Text]
+        global preUpdateTime, namespaces
+        now = time.time()
+        if now - preUpdateTime > 120:
+            preUpdateTime = now
+            fo = open("/etc/config/whitelist", "r")
+            line = fo.readline()
+            if line != namespaces:
+                namespaces = line
+                logging.info("Namespaces updated:" + namespaces)
+            fo.close()
+
         measurements = []
         try:
             entries = Encoder.parse_line(msg.decode())
@@ -61,15 +76,13 @@ class Encoder(object):
                 measurement = entry["name"]
                 if measurement.find(".") > 0:
                     continue
-                
+
                 nstags = entry['tags']
-                if "WHITE_LIST_NS" in os.environ and "namespace" in nstags:
-                    namespaces = os.environ["WHITE_LIST_NS"]
-                    nsList = namespaces.split(",")
+                if "namespace" in nstags:
                     namespace = nstags["namespace"]
-                    if namespace not in nsList:
-                        continue   
-                    
+                    if namespace not in namespaces:
+                        continue
+
                 tags = self.format_tags(entry)
                 value = self.format_value(entry)
                 time = self.format_time(entry)
