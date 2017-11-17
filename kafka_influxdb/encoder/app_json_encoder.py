@@ -17,6 +17,9 @@ except:
 from datetime import datetime
 from kafka_influxdb.encoder.escape_functions import influxdb_tag_escaper
 
+preUpdateTime = 0
+namespaces = ""
+    
 class Encoder(object):
     """
 
@@ -46,9 +49,6 @@ class Encoder(object):
         "timestamp": 1487570855266
     }]
      """
-
-    preUpdateTime = 0
-    namespaces = ""
 
     def __init__(self):
         self.escape_tag = influxdb_tag_escaper()
